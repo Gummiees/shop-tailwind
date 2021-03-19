@@ -1,0 +1,15 @@
+version: '3.7'
+services: # Here we define our service(s)
+  angular-service:
+    container_name: angularcontainer  # Container name
+    build: .
+    command: sh -c "npm i && npm start"
+    ports:
+      - 4200:4200
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+      - node_modules:/home/node/app/node_modules
+
+volumes:
+  node_modules:
