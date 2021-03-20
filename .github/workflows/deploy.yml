@@ -56,4 +56,3 @@ jobs:
             -p 8000:8000 \
             --name $(echo $IMAGE_NAME) \
              $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) $(echo $COMMAND)
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) $(echo $COMMAND)
