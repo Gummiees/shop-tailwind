@@ -22,11 +22,8 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@v2
 
-    - name: Update SHA
-      run: |
-        echo "GITHUB_SHA: $GITHUB_SHA"
-        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-        echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+#    - name: Update SHA
+#      run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
 
     - name: Build container image
       run: docker build -t registry.digitalocean.com/asb/static-example:$(echo $GITHUB_SHA | head -c7) .
