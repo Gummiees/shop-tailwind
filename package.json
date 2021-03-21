@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
-    "build": "npm run lint && ng build --aot --build-optimizer",
+    "build": "npm run lint && ng test --watch=false --browsers ChromeHeadless && ng build --aot --build-optimizer",
     "test": "ng test",
     "lint": "npx ng lint shop-tailwind",
     "e2e": "ng e2e"

@@ -34,7 +34,7 @@ jobs:
       run: docker run -p 4000:4000 -d --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)
     
     - name: Linting
-      run: docker exec -it $(echo $CONTAINER_NAME) npm run lint
+      run: docker exec $(echo $CONTAINER_NAME) npm run lint
     
     - name: Testing
-      run: docker exec -it $(echo $CONTAINER_NAME) ng test --watch=false --browsers ChromeHeadless
+      run: docker exec $(echo $CONTAINER_NAME) ng test --watch=false --browsers ChromeHeadless
