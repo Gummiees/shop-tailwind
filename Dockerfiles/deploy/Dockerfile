@@ -1,13 +1,13 @@
 FROM zenika/alpine-chrome:latest AS build
 
-RUN mkdir -p /app
+RUN sudo mkdir -p /app
 WORKDIR /app
 COPY package.json package-lock.json ./
 
-RUN npm i
+RUN sudo npm i
 COPY . ./
 
-RUN npm run build
+RUN sudo npm run build
 
 FROM nginx:stable
 COPY --from=build /app/dist/shop-tailwind /srv

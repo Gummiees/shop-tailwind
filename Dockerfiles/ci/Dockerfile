@@ -1,11 +1,11 @@
 FROM zenika/alpine-chrome:latest AS build
 
-RUN mkdir -p /app
+RUN sudo mkdir -p /app
 WORKDIR /app
 COPY package.json package-lock.json ./
 
-RUN npm i
+RUN sudo npm i
 COPY . ./
 
-RUN npm run lint
-RUN npm run cmd-test
+RUN sudo npm run lint
+RUN sudo npm run cmd-test
