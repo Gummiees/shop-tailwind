@@ -1,12 +1,11 @@
-FROM selenium/node-chrome:89.0 AS build
+FROM zenika/alpine-chrome:latest AS build
 
-RUN sudo mkdir -p /app
+RUN mkdir -p /app
 WORKDIR /app
 COPY package.json package-lock.json ./
 
-RUN sudo apt-get update && sudo apt-get install -y apt-transport-https && sudo apt-get installl -y npm
-RUN sudo npm i
+RUN npm i
 COPY . ./
 
-RUN  sudo npm run lint
-RUN  sudo npm run cmd-test
+RUN npm run lint
+RUN npm run cmd-test
