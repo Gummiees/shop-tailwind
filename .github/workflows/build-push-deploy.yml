@@ -2,7 +2,7 @@ env:
   LOCAL_IMAGE_NAME: "shop-tailwind_web"
   IMAGE_NAME: "angular-image"
   VERSION: "latest"
-  REGISTRY: "ghcr.io/gummiees"
+  REGISTRY: "ghcr.io/gummiees/shop-tailwind"
 
 on:
   push:
@@ -33,22 +33,6 @@ jobs:
         docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
-
-    # - name: Push to GitHub Packages
-    #   uses: docker/login-action@v1
-    #   with:
-    #     registry: ghcr.io
-    #     username: ${{ github.repository_owner }}
-    #     password: ${{ secrets.GH_TOKEN }}
-
-    - name: Stop and destroy container and image
-      run: |
-        echo Stop running container
-        docker stop $(echo $IMAGE_NAME)
-        echo Remove old container
-        docker rm -f $(echo $IMAGE_NAME)
-        echo Remove old image
-        docker rmi -f $(echo $LOCAL_IMAGE_NAME)
 
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
