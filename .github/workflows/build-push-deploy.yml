@@ -2,7 +2,9 @@ env:
   LOCAL_IMAGE_NAME: "shop-tailwind_web"
   IMAGE_NAME: "angular-image"
   VERSION: "latest"
+  REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
+  USERNAME: "github.repository_owner"
 
 on:
   push:
@@ -30,7 +32,7 @@ jobs:
         echo Tag image
         docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
-        docker login docker.pkg.github.com -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
+        docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
     
@@ -41,19 +43,14 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE : ${{ secrets.PASSPHRASE }}
-          envs: IMAGE_NAME,LOCAL_IMAGE_NAME,REGISTRY
+          envs: IMAGE_NAME,REGISTRY,USERNAME,REGISTRY_BASE_URL
           script: |
-            # Stop running container
+            echo Secrets test: ${{ secrets.FOO }}
+            echo Stop running container
             docker stop $(echo $IMAGE_NAME)
-            # Remove old container
+            echo Remove old container
             docker rm -f $(echo $IMAGE_NAME)
-            # Remove old image
-            docker rmi -f $(echo $LOCAL_IMAGE_NAME)
-            # Login into GitHub Registry
-            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
-            # Run a new container from the pulled image
-            docker run -d \
-            --restart always \
-            -p 8000:8000 \
-            --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
+            echo Login into GitHub Registry
+            docker login $(echo $REGISTRY_BASE_URL) -u $(echo $USERNAME) -p ${{ secrets.GH_TOKEN }}
+            echo Run a new container from the pulled image
+            docker run -d --restart always -p 80:80 --name $(echo $IMAGE_NAME) $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
