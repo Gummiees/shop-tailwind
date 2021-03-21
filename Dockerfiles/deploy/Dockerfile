@@ -8,4 +8,5 @@ COPY . ./
 RUN npm run build
 
 FROM nginx:stable
-COPY --from=build /app/dist/shop-tailwind /usr/share/nginx/html
+COPY --from=build /app/dist/shop-tailwind /srv
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,8 +1,0 @@
-version: '3.7'
-services:
-  web:
-    container_name: deploy-container
-    restart: always
-    build: .
-    ports:
-      - 80:80

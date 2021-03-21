@@ -1,0 +1,34 @@
+env:
+  IMAGE_NAME: "angular-ci-image"
+  CONTAINER_NAME: "angular-ci-container"
+  DOCKERFILE: "./Dockerfiles/ci/Dockerfile"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'config/**'
+      - 'site/**'
+      - 'Dockerfile'
+      - '.github/workflows/**'
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: ["*"]
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    name: Build the container and run the tests on it
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout main
+      uses: actions/checkout@v2
+      
+    - name: Build the image
+      run: docker build -f $(echo $DOCKERFILE) -t $(echo $IMAGE_NAME) .
+
+    - name: Build the container for the image and run it
+      run: docker run -p 4000:4000 -d --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)
