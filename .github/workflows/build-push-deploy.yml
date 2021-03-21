@@ -2,7 +2,7 @@ env:
   LOCAL_IMAGE_NAME: "shop-tailwind_web"
   IMAGE_NAME: "angular-image"
   VERSION: "latest"
-  REGISTRY: "ghcr.io/gummiees/shop-tailwind"
+  REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
 
 on:
   push:
@@ -30,17 +30,9 @@ jobs:
         echo Tag image
         docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
-        docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
+        docker login docker.pkg.github.com -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
-
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with:
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-
-    - name: Log in to DigitalOcean Container Registry with short-lived credentials
-      run: doctl registry login --expiry-seconds 600
     
     - name: Deploy to Digital Ocean droplet via SSH action
       uses: appleboy/ssh-action@v0.1.3
