@@ -1,7 +1,7 @@
 env:
   LOCAL_IMAGE_NAME: "shop-tailwind_web"
   IMAGE_NAME: "angular-image"
-  VERSION: "0.0.1"
+  VERSION: "latest"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
 
 on:
