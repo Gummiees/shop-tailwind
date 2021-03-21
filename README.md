@@ -1,4 +1,4 @@
-# ShopTailwind
+# ShopTailwind [![.github/workflows/deploy.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/Gummiees/shop-tailwind/actions/workflows/deploy.yml)
 
 I am using this project to learn about Tailwind CSS, but mostly to learn about docker, containers, WSL2, CI, CD, etc.
 
