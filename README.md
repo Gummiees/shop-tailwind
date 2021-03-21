@@ -32,5 +32,6 @@ You can check the website deployed by GitHub Actions inside a Docker container o
 - Develop it on a Docker container inside WSL2
 - Create post on Medium showing how to do it
 - Add unit testing and e2e testing
-- Create workflow to run tests
+- Create different workflow to run tests and CI when PR opens
+- Set the current workflow to run when PR merges
 - Develop the same with VueJs
