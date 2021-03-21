@@ -27,11 +27,11 @@ jobs:
 
     - name: Push the image to GitHub Packages
       run: |
-        # Login into GitHub container
+        echo Login into GitHub container
         echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-        # Tag image
+        echo Tag image
         docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
-        # Push image
+        echo Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
 
     # - name: Push to GitHub Packages
@@ -43,11 +43,11 @@ jobs:
 
     - name: Stop and destroy container and image
       run: |
-        # Stop running container
+        echo Stop running container
         docker stop $(echo $IMAGE_NAME)
-        # Remove old container
+        echo Remove old container
         docker rm -f $(echo $IMAGE_NAME)
-        # Remove old image
+        echo Remove old image
         docker rmi -f $(echo $LOCAL_IMAGE_NAME)
 
     - name: Install doctl
