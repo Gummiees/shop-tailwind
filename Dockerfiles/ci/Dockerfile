@@ -4,6 +4,7 @@ RUN sudo mkdir -p /app
 WORKDIR /app
 COPY package.json package-lock.json ./
 
+RUN sudo apt-get install npm
 RUN sudo npm i
 COPY . ./
 
