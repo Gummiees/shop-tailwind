@@ -14,7 +14,6 @@ You can check the website deployed by GitHub Actions inside a Docker container o
 - First time deploying something via commands on a remote server which uses Ubuntu (first time using SSH without PuTTY)
 - First time working with NGINX
 - Understanding of images, containers, Dockerfiles, compose files, etc.
-- First time using GitHub deployment status
 
 ## Docker commands
 
