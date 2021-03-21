@@ -27,10 +27,10 @@ jobs:
 
     - name: Push the image to GitHub Packages
       run: |
-        echo Login into GitHub container
-        echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
         echo Tag image
         docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
+        echo Login into GitHub container
+        docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
 
@@ -73,6 +73,8 @@ jobs:
             docker rm -f $(echo $IMAGE_NAME)
             # Remove old image
             docker rmi -f $(echo $LOCAL_IMAGE_NAME)
+            # Login into GitHub Registry
+            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             # Run a new container from the pulled image
             docker run -d \
             --restart always \
