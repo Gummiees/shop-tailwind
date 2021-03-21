@@ -41,7 +41,7 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.SSHKEY }}
           PASSPHRASE : ${{ secrets.PASSPHRASE }}
-          envs: IMAGE_NAME,REGISTRY,GITHUB_SHA,COMMAND
+          envs: IMAGE_NAME,LOCAL_IMAGE_NAME,REGISTRY
           script: |
             # Stop running container
             docker stop $(echo $IMAGE_NAME)
@@ -56,4 +56,4 @@ jobs:
             --restart always \
             -p 8000:8000 \
             --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):latest
