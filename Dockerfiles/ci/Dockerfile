@@ -5,6 +5,8 @@ RUN apt-get install -y libappindicator1 fonts-liberation libasound2 libatk-bridg
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome*.deb
 
+RUN mkdir -p /app
+WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm i
