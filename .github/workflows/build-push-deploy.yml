@@ -16,6 +16,9 @@ on:
       - '.github/workflows/**'
   pull_request:
     branches: ["*"]
+  release:
+    types:
+      - created
 
 jobs:
   build:
