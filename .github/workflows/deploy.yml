@@ -14,20 +14,6 @@ on:
       - '.github/workflows/**'
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to GitHub Packages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: gummiees/shop-tailwind/angular-app
-          tag_with_ref: true
   build:
     name: Build, push, and deploy
     runs-on: ubuntu-latest
