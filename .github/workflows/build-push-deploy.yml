@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    if: github.pull_request.merged == 'true'
+    if: github.event.pull_request.merged == true
     name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
     runs-on: ubuntu-latest
     steps:
