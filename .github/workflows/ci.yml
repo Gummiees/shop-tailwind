@@ -32,9 +32,3 @@ jobs:
 
     - name: Build the container for the image and run it
       run: docker run -p 4000:4000 -d --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)
-    
-    - name: Linting
-      run: docker exec $(echo $CONTAINER_NAME) npm run lint
-    
-    - name: Testing
-      run: docker exec $(echo $CONTAINER_NAME) ng test --watch=false --browsers ChromeHeadless

@@ -5,3 +5,5 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm i
 COPY . ./
+RUN  npm run lint
+RUN  npm run cmd-test
