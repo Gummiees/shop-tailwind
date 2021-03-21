@@ -1,4 +1,11 @@
 .git
-.gitignore
+.github
 .vscode
 node_modules
+e2e
+Dockerfiles
+
+.editorconfig
+.gitignore
+.prettierrc.js
+README.md
