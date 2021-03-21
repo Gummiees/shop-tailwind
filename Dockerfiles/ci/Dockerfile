@@ -1,8 +1,4 @@
-FROM node:lts AS build
-
-# Install Chrome for testing
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome*.deb
+FROM selenium/node-chrome:89.0 AS build
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -13,8 +9,3 @@ COPY . ./
 
 RUN  npm run lint
 RUN  npm run cmd-test
-
-# Uninstall Chrome
-RUN apt-get remove google-chrome-stable
-RUN apt-get purge google-chrome-stable
-RUN apt-get autoremove
