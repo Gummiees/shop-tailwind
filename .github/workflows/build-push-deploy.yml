@@ -1,5 +1,4 @@
 env:
-  #LOCAL_IMAGE_NAME: "shop-tailwind_web"
   IMAGE_NAME: "angular-image"
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
@@ -37,12 +36,10 @@ jobs:
       
     - name: Build the docker container
       run: docker run -p 80:80 -d --restart always --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)
-#     run: docker-compose up -d --build
 
     - name: Push the image to GitHub Packages
       run: |
         echo Tag image
-        #       docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
         docker tag $(echo $IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
         docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
