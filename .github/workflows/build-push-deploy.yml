@@ -27,15 +27,28 @@ jobs:
 
     - name: Push the image to GitHub Packages
       run: |
-        docker tag $LOCAL_IMAGE_NAME:latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
+        # Login into GitHub container
+        echo ${{ secrets.GH_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+        # Tag image
+        docker tag $(echo $LOCAL_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
+        # Push image
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
 
-    - name: Push to GitHub Packages
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GH_TOKEN }}
+    # - name: Push to GitHub Packages
+    #   uses: docker/login-action@v1
+    #   with:
+    #     registry: ghcr.io
+    #     username: ${{ github.repository_owner }}
+    #     password: ${{ secrets.GH_TOKEN }}
+
+    - name: Stop and destroy container and image
+      run: |
+        # Stop running container
+        docker stop $(echo $IMAGE_NAME)
+        # Remove old container
+        docker rm -f $(echo $IMAGE_NAME)
+        # Remove old image
+        docker rmi -f $(echo $LOCAL_IMAGE_NAME)
 
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
