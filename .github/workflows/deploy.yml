@@ -1,5 +1,5 @@
 env:
-  REGISTRY: "registry.digitalocean.com/gummiees-registry"
+  REGISTRY: ${{ secrets.REGISTRY }}
   IMAGE_NAME: "angular-image"
   COMMAND: "npm run build"
 
