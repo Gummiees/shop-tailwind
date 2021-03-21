@@ -19,7 +19,6 @@ jobs:
     name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout main
       uses: actions/checkout@v2
       
@@ -27,7 +26,7 @@ jobs:
       run: docker-compose up -d --build
 
     - name: Push the image to GitHub Packages
-    - run: |
+      run: |
         docker tag $LOCAL_IMAGE_NAME:latest $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $VERSION)
 
