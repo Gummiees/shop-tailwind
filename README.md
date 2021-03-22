@@ -13,6 +13,7 @@ You can check the website deployed by GitHub Actions inside a Docker container o
 - GitHub Actions workflows have been adapted and they are not a basic copy&paste. I understand what it does 🎉
 - First time deploying something via commands on a remote server which uses Ubuntu (first time using SSH without PuTTY)
 - Understanding of images, containers, Dockerfiles, compose files, etc.
+- First time working with NGINX
 
 ## Docker commands
 

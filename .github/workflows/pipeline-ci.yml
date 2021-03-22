@@ -13,7 +13,8 @@ on:
       - '.github/workflows/**'
   pull_request:
     types: [opened, reopened]
-    branches: ["*"]
+    branches:
+      - main
   release:
     types:
       - created
