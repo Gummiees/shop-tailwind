@@ -4,10 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
-    "build": "npm run lint && npm run cmd-test && npm run buildpro",
-    "buildpro": "ng build --aot --build-optimizer",
-    "test": "ng test",
-    "cmd-test": " ng test --watch=false --browsers ChromeHeadless",
+    "build": "ng build --aot --build-optimizer",
+    "test": "ng test --watch=false --browsers ChromeHeadless",
+    "test:ci": "npm run lint && npm run test",
     "lint": "npx ng lint shop-tailwind",
     "e2e": "ng e2e"
   },
