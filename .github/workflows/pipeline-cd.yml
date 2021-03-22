@@ -3,7 +3,7 @@ env:
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
-  DOCKERFILE: "./Dockerfiles/deploy/Dockerfile"
+  DOCKERFILE: "./Dockerfiles/cd/Dockerfile"
 
 on:
   pull_request:
