@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    name: Build the container and run the tests on it
+    name: CI workflow
     runs-on: ubuntu-latest
     steps:
     - name: Checkout main

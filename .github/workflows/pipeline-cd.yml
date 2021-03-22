@@ -6,14 +6,6 @@ env:
   DOCKERFILE: "./Dockerfiles/deploy/Dockerfile"
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'config/**'
-      - 'site/**'
-      - 'Dockerfile'
-      - '.github/workflows/**'
   pull_request:
     types: [closed]
     branches: ["*"]
