@@ -1,6 +1,5 @@
 env:
   IMAGE_NAME: "angular-ci-image"
-  CONTAINER_NAME: "angular-ci-container"
   DOCKERFILE: "./Dockerfiles/ci/Dockerfile"
 
 on:
@@ -29,6 +28,3 @@ jobs:
       
     - name: Build the image
       run: docker build -f $(echo $DOCKERFILE) -t $(echo $IMAGE_NAME) .
-
-    - name: Build the container for the image and run it
-      run: docker run -p 4000:4000 -d --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)

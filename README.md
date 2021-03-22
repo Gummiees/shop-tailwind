@@ -1,4 +1,4 @@
-# ShopTailwind [![.github/workflows/build-push-deploy.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml)
+# ShopTailwind [![.github/workflows/build-push-deploy.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml) [![.github/workflows/ci.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/ci.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/ci.yml)
 
 I am using this project to learn about Tailwind CSS, but mostly to learn about docker, containers, WSL2, CI/CD, GitHub Actions, GitHub packages, deployment to DigitalOcean, etc.
 

@@ -3,7 +3,6 @@ env:
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
-  CONTAINER_NAME: "deploy-container"
   DOCKERFILE: "./Dockerfiles/deploy/Dockerfile"
 
 on:
@@ -33,9 +32,6 @@ jobs:
       
     - name: Build the image
       run: docker build -f $(echo $DOCKERFILE) -t $(echo $IMAGE_NAME) .
-      
-    - name: Build the docker container
-      run: docker run -p 80:80 -d --restart always --name $(echo $CONTAINER_NAME) $(echo $IMAGE_NAME)
 
     - name: Push the image to GitHub Packages
       run: |
