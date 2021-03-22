@@ -54,14 +54,16 @@ jobs:
           passphrase : ${{ secrets.PASSPHRASE }}
           envs: CD_IMAGE_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
           script: |
-            echo List images
-            docker images
             echo List containers
             docker ps
             echo Stop running container
             docker stop $(echo $CD_IMAGE_NAME)
             echo Remove old container
             docker rm -f $(echo $CD_IMAGE_NAME)
+            echo Remove ALL images
+            docker rmi $(docker images -qf "dangling=true")
+            echo List containers
+            docker ps
             echo Login into GitHub Registry
             docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             echo Run a new container from the pulled image
