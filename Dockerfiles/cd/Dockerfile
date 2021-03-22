@@ -1,11 +1,12 @@
 FROM node:lts-alpine AS build
+RUN apk add chromium
+
+ENV CHROME_BIN=/usr/bin/chromium-browser
 
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
-
 RUN npm i
 COPY . ./
-
 RUN npm run build
 
 FROM nginx:stable
