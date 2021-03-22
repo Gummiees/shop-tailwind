@@ -1,4 +1,4 @@
-# ShopTailwind [![.github/workflows/build-push-deploy.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml)
+# ShopTailwind [![.github/workflows/build-push-deploy.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/build-push-deploy.yml) [![.github/workflows/ci.yml](https://github.com/Gummiees/shop-tailwind/actions/workflows/ci.yml/badge.svg)](https://github.com/Gummiees/shop-tailwind/actions/workflows/ci.yml)
 
 I am using this project to learn about Tailwind CSS, but mostly to learn about docker, containers, WSL2, CI/CD, GitHub Actions, GitHub packages, deployment to DigitalOcean, etc.
 
@@ -12,7 +12,6 @@ You can check the website deployed by GitHub Actions inside a Docker container o
 - First time doing CI/CD "manually" with GitHub Actions (meaning that I do not just click on a button like on Heroku automatic deploys)
 - GitHub Actions workflows have been adapted and they are not a basic copy&paste. I understand what it does 🎉
 - First time deploying something via commands on a remote server which uses Ubuntu (first time using SSH without PuTTY)
-- First time working with NGINX
 - Understanding of images, containers, Dockerfiles, compose files, etc.
 
 ## Docker commands
