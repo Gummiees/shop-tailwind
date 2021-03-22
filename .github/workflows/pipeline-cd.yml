@@ -26,7 +26,7 @@ jobs:
     - name: Build the image
       run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
   cd:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
     runs-on: ubuntu-latest
     steps:
