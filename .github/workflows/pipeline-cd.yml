@@ -5,7 +5,10 @@ env:
   DOCKERFILE_CI: "./Dockerfiles/ci/Dockerfile"
   DOCKERFILE_CD: "./Dockerfiles/cd/Dockerfile"
   CI_IMAGE_NAME: "angular-ci"
-  CD_IMAGE_NAME: "angular-image"
+  CD_IMAGE_NAME: "angular-cd"
+  CI_CONTAINER_NAME: "ci-container"
+  CD_CONTAINER_NAME: "cd-container"
+  CI_COMMAND: "npm run test:ci"
 
 on:
   pull_request:
@@ -25,6 +28,9 @@ jobs:
       
     - name: Build the image
       run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
+      
+    - name: Run the image on a container, and run the tests on it
+      run: docker run -d --name $(echo $CI_CONTAINER_NAME) $(echo $CI_IMAGE_NAME):latest $(echo $CI_COMMAND)
   cd:
     #if: github.event.pull_request.merged == true
     name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
@@ -52,19 +58,13 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase : ${{ secrets.PASSPHRASE }}
-          envs: CD_IMAGE_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
+          envs: CD_IMAGE_NAME,CD_CONTAINER_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
           script: |
-            echo List containers
-            docker ps
             echo Stop running container
-            docker stop $(echo $CD_IMAGE_NAME)
+            docker stop $(echo $CD_CONTAINER_NAME)
             echo Remove old container
-            docker rm -f $(echo $CD_IMAGE_NAME)
-            echo Remove ALL images
-            docker rmi $(docker images -qf "dangling=true")
-            echo List containers
-            docker ps
+            docker rm -f $(echo $CD_CONTAINER_NAME)
             echo Login into GitHub Registry
             docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             echo Run a new container from the pulled image
-            docker run -d --restart always -p 80:80 --name $(echo $CD_IMAGE_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+            docker run -d --restart always -p 80:80 --name $(echo $CD_CONTAINER_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
