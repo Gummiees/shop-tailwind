@@ -2,8 +2,7 @@ env:
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
-  DOCKERFILE_CI: "./Dockerfiles/ci/Dockerfile"
-  DOCKERFILE_CD: "./Dockerfiles/cd/Dockerfile"
+  DOCKERFILE_CD: "Dockerfile.cd"
   CI_IMAGE_NAME: "angular-ci"
   CD_IMAGE_NAME: "angular-cd"
   CI_CONTAINER_NAME: "ci-container"
@@ -25,12 +24,6 @@ jobs:
     steps:
     - name: Checkout main
       uses: actions/checkout@v2
-      
-    - name: Build the image
-      run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
-      
-    - name: Run the image on a container, and run the tests on it
-      run: docker run -d --name $(echo $CI_CONTAINER_NAME) $(echo $CI_IMAGE_NAME):latest $(echo $CI_COMMAND)
   cd:
     #if: github.event.pull_request.merged == true
     name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
@@ -38,6 +31,12 @@ jobs:
     steps:
     - name: Checkout main
       uses: actions/checkout@v2
+      
+    - name: Build the CI image
+      run: docker build -t $(echo $CI_IMAGE_NAME) .
+      
+    - name: Run the CI image on a container, and run the tests on it
+      run: docker run -d --name $(echo $CI_CONTAINER_NAME) $(echo $CI_IMAGE_NAME):latest $(echo $CI_COMMAND)
       
     - name: Build the image
       run: docker build -f $(echo $DOCKERFILE_CD) -t $(echo $CD_IMAGE_NAME) .

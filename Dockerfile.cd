@@ -1,9 +1,6 @@
-FROM node:lts-alpine AS build
+# You only can run this image if you previously built the CI image.
+FROM angular-ci:latest AS build
 
-WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
-RUN npm i
-COPY . ./
 RUN npm run build
 
 FROM nginx:stable

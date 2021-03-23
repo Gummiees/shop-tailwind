@@ -24,7 +24,7 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Build the image
-      run: docker build -f ./Dockerfiles/ci/Dockerfile -t ci-image .
+      run: docker build -t ci-image .
       
     - name: Build and run the container
       run: docker run -d --name ci-container ci-image:latest npm run test:ci
