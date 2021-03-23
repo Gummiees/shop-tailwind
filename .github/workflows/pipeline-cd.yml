@@ -2,10 +2,14 @@ env:
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
-  DOCKERFILE_CI: "./Dockerfiles/ci/Dockerfile"
-  DOCKERFILE_CD: "./Dockerfiles/cd/Dockerfile"
+  DOCKERFILE_CI: "Dockerfile.ci"
+  DOCKERFILE_CD: "Dockerfile.cd"
+  DOCKERFILE_DEPLOY: "Dockerfile.deploy"
   CI_IMAGE_NAME: "angular-ci"
-  CD_IMAGE_NAME: "angular-image"
+  CD_IMAGE_NAME: "angular-cd"
+  DEPLOY_IMAGE_NAME: "angular-deploy"
+  CI_CONTAINER_NAME: "ci-container"
+  CD_CONTAINER_NAME: "cd-container"
 
 on:
   pull_request:
@@ -16,30 +20,27 @@ on:
       - created
 
 jobs:
-  ci:
-    name: CI workflow
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout main
-      uses: actions/checkout@v2
-      
-    - name: Build the image
-      run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
-  cd:
+  ci-cd:
     if: github.event.pull_request.merged == true
-    name: Build the container, push it to GitHub Packages, deploys the image to a droplet on DigitalOcean
+    name: CI/CD workflow
     runs-on: ubuntu-latest
     steps:
     - name: Checkout main
       uses: actions/checkout@v2
       
-    - name: Build the image
+    - name: Build the CI image
+      run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
+      
+    - name: Build the CD image
       run: docker build -f $(echo $DOCKERFILE_CD) -t $(echo $CD_IMAGE_NAME) .
+      
+    - name: Build the deploy image
+      run: docker build -f $(echo $DOCKERFILE_DEPLOY) -t $(echo $DEPLOY_IMAGE_NAME) .
 
     - name: Push the image to GitHub Packages
       run: |
         echo Tag image
-        docker tag $(echo $CD_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+        docker tag $(echo $DOCKERFILE_DEPLOY):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
         docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
@@ -52,17 +53,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase : ${{ secrets.PASSPHRASE }}
-          envs: CD_IMAGE_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
+          envs: CD_IMAGE_NAME,CD_CONTAINER_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
           script: |
-            echo List images
-            docker images
-            echo List containers
-            docker ps
             echo Stop running container
-            docker stop $(echo $CD_IMAGE_NAME)
+            docker stop $(echo $CD_CONTAINER_NAME)
             echo Remove old container
-            docker rm -f $(echo $CD_IMAGE_NAME)
+            docker rm -f $(echo $CD_CONTAINER_NAME)
+            echo Remove old image
+            docker rmi -f $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME)
             echo Login into GitHub Registry
             docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             echo Run a new container from the pulled image
-            docker run -d --restart always -p 80:80 --name $(echo $CD_IMAGE_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+            docker run -d --restart always -p 80:80 --name $(echo $CD_CONTAINER_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
