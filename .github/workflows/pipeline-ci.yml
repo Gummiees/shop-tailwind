@@ -27,4 +27,4 @@ jobs:
       run: docker build -t ci-image .
       
     - name: Build and run the container
-      run: docker run -d --name ci-container ci-image:latest npm run test:ci
+      run: docker run -d --name ci-container ci-image:latest
