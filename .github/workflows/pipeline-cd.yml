@@ -40,7 +40,7 @@ jobs:
     - name: Push the image to GitHub Packages
       run: |
         echo Tag image
-        docker tag $(echo $DOCKERFILE_DEPLOY):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+        docker tag $(echo $DEPLOY_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
         docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image

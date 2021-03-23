@@ -15,6 +15,24 @@ You can check the website deployed by GitHub Actions inside a Docker container o
 - Understanding of images, containers, Dockerfiles, compose files, etc.
 - First time working with NGINX
 
+## Docker images
+
+Optimized as much as I could. They run with the official node image on the lts version on alpine.
+
+### Steps to deploy
+
+1. Runs the CI image `Dockerfile.ci`. Executes `npm i` and `npm run test:ci`.
+2. Runs the CD image `Dockerfile.cd`, which uses the `angular-ci` image, built on step 1. Executes `npm run build`.
+3. Runs the Deploy image `Dockerfile.deploy`, which uses the official `nginx` image, and some inputs from the step 2 image `angular-cd`.
+4. Logs in and uploads the image from step 3 named as `angular-cd` to the [GitHub Packages registry](https://github.com/Gummiees/shop-tailwind/packages/).
+5. Connects via SSH to the Droplet on DigitalOcean.
+6. Stops the old container
+7. Deletes the container
+8. Deletes the image
+9. Creates a new container from pulling the uploaded image from step 4, turned on, hosted on port 80.
+
+Success! 🎉
+
 ## Docker commands
 
 - `docker-compose up --build -d`
