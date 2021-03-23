@@ -25,6 +25,3 @@ jobs:
       
     - name: Build the image
       run: docker build -t ci-image -f Dockerfile.ci .
-      
-    - name: Build and run the container
-      run: docker run -d --name ci-container ci-image:latest
