@@ -56,6 +56,8 @@ jobs:
             docker stop $(echo $CD_CONTAINER_NAME)
             echo Remove old container
             docker rm -f $(echo $CD_CONTAINER_NAME)
+            echo Remove old image
+            docker rmi -f $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME)
             echo Login into GitHub Registry
             docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             echo Run a new container from the pulled image
