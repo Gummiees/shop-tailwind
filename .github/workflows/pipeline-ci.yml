@@ -8,7 +8,7 @@ on:
       - 'Dockerfile'
       - '.github/workflows/**'
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize, reopened, edited]
     branches:
       - main
   release:

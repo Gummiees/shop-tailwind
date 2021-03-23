@@ -13,7 +13,7 @@ env:
 
 on:
   pull_request:
-    types: [opened, closed, synchronize, reopened, edited]
+    types: [closed]
     branches: ["*"]
   release:
     types:
