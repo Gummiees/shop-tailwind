@@ -2,9 +2,12 @@ env:
   VERSION: "latest"
   REGISTRY_BASE_URL: "docker.pkg.github.com"
   REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
+  DOCKERFILE_CI: "Dockerfile.ci"
   DOCKERFILE_CD: "Dockerfile.cd"
+  DOCKERFILE_DEPLOY: "Dockerfile.deploy"
   CI_IMAGE_NAME: "angular-ci"
   CD_IMAGE_NAME: "angular-cd"
+  DEPLOY_IMAGE_NAME: "angular-deploy"
   CI_CONTAINER_NAME: "ci-container"
   CD_CONTAINER_NAME: "cd-container"
 
@@ -26,18 +29,18 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Build the CI image
-      run: docker build -t $(echo $CI_IMAGE_NAME) .
+      run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
       
-    - name: Run the CI image on a container, and run the tests on it
-      run: docker run -d --name $(echo $CI_CONTAINER_NAME) $(echo $CI_IMAGE_NAME):latest
-      
-    - name: Build the image
+    - name: Build the CD image
       run: docker build -f $(echo $DOCKERFILE_CD) -t $(echo $CD_IMAGE_NAME) .
+      
+    - name: Build the deploy image
+      run: docker build -f $(echo $DOCKERFILE_DEPLOY) -t $(echo $DEPLOY_IMAGE_NAME) .
 
     - name: Push the image to GitHub Packages
       run: |
         echo Tag image
-        docker tag $(echo $CD_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+        docker tag $(echo $DOCKERFILE_DEPLOY):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
         echo Login into GitHub container
         docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
         echo Push image
