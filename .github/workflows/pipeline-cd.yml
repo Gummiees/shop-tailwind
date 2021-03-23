@@ -27,6 +27,14 @@ jobs:
     steps:
     - name: Checkout main
       uses: actions/checkout@v2
+
+    - uses: chrnorm/deployment-action@releases/v1
+      name: Create GitHub deployment
+      id: deployment
+      with:
+        token: "${{ secrets.GH_TOKEN }}"
+        target_url: http://gummiees.com
+        environment: production
       
     - name: Build the CI image
       run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
@@ -65,3 +73,21 @@ jobs:
             docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
             echo Run a new container from the pulled image
             docker run -d --restart always -p 80:80 --name $(echo $CD_CONTAINER_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+      
+    - name: Update deployment status (success)
+      if: success()
+      uses: chrnorm/deployment-status@releases/v1
+      with:
+        token: "${{ secrets.GH_TOKEN }}"
+        target_url: http://gummiees.com
+        state: "success"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+    - name: Update deployment status (failure)
+      if: failure()
+      uses: chrnorm/deployment-status@releases/v1
+      with:
+        token: "${{ secrets.GH_TOKEN }}"
+        target_url: http://gummiees.com
+        state: "failure"
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
