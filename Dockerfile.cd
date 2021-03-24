@@ -1,4 +1,4 @@
 # You only can run this image if you previously built the CI image.
-FROM angular-ci:latest AS build
+FROM angular-ci:latest
 
 RUN npm run build

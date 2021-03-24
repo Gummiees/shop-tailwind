@@ -1,27 +1,30 @@
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'config/**'
-      - 'site/**'
-      - 'Dockerfile'
-      - '.github/workflows/**'
-  pull_request:
-    types: [opened, reopened, synchronize, reopened, edited]
-    branches:
-      - main
-  release:
-    types:
-      - created
+    push:
+        branches:
+            - main
+        paths:
+            - 'config/**'
+            - 'site/**'
+            - 'Dockerfile'
+            - '.github/workflows/**'
+    pull_request:
+        types: [opened, reopened, synchronize, reopened, edited]
+        branches:
+            - main
+    release:
+        types:
+            - created
 
 jobs:
-  build:
-    name: CI workflow
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout main
-      uses: actions/checkout@v2
-      
-    - name: Build the image
-      run: docker build -t ci-image -f Dockerfile.ci .
+    build:
+        name: CI workflow
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout main
+              uses: actions/checkout@v2
+
+            - name: Build the BASE image
+              run: docker build -f Dockerfile.base -t angular-base .
+
+            - name: Build the image
+              run: docker build -f Dockerfile.ci  -t angular-ci .

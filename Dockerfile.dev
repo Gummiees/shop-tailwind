@@ -1,4 +1,5 @@
 # You only can run this image if you previously built the BASE image.
 FROM angular-base:latest
 
-RUN npm run test:ci
+COPY --from=angular-base:latest /usr/src/app/ ./
+RUN npm install -g @angular/cli

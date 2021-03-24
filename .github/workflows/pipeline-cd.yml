@@ -1,93 +1,78 @@
 env:
-  VERSION: "latest"
-  REGISTRY_BASE_URL: "docker.pkg.github.com"
-  REGISTRY: "docker.pkg.github.com/gummiees/shop-tailwind"
-  DOCKERFILE_CI: "Dockerfile.ci"
-  DOCKERFILE_CD: "Dockerfile.cd"
-  DOCKERFILE_DEPLOY: "Dockerfile.deploy"
-  CI_IMAGE_NAME: "angular-ci"
-  CD_IMAGE_NAME: "angular-cd"
-  DEPLOY_IMAGE_NAME: "angular-deploy"
-  CI_CONTAINER_NAME: "ci-container"
-  CD_CONTAINER_NAME: "cd-container"
+    VERSION: 'latest'
+    REGISTRY_BASE_URL: 'docker.pkg.github.com'
+    REGISTRY: 'docker.pkg.github.com/gummiees/shop-tailwind'
+    DOCKERFILE_BASE: 'Dockerfile.base'
+    DOCKERFILE_CI: 'Dockerfile.ci'
+    DOCKERFILE_CD: 'Dockerfile.cd'
+    DOCKERFILE_DEPLOY: 'Dockerfile.deploy'
+    BASE_IMAGE_NAME: 'angular-base'
+    CI_IMAGE_NAME: 'angular-ci'
+    CD_IMAGE_NAME: 'angular-cd'
+    DEPLOY_IMAGE_NAME: 'angular-deploy'
+    CI_CONTAINER_NAME: 'ci-container'
+    CD_CONTAINER_NAME: 'cd-container'
 
 on:
-  pull_request:
-    types: [closed]
-    branches: ["*"]
-  release:
-    types:
-      - created
+    pull_request:
+        types: [closed]
+        branches: ['*']
+    release:
+        types:
+            - created
 
 jobs:
-  ci-cd:
-    if: github.event.pull_request.merged == true
-    name: CI/CD workflow
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout main
-      uses: actions/checkout@v2
+    ci-cd:
+        if: github.event.pull_request.merged == true
+        name: CI/CD workflow
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout main
+              uses: actions/checkout@v2
 
-    - uses: chrnorm/deployment-action@releases/v1
-      name: Create GitHub deployment
-      id: deployment
-      with:
-        token: "${{ github.token }}"
-        target_url: http://gummiees.com
-        environment: production
-      
-    - name: Build the CI image
-      run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
-      
-    - name: Build the CD image
-      run: docker build -f $(echo $DOCKERFILE_CD) -t $(echo $CD_IMAGE_NAME) .
-      
-    - name: Build the deploy image
-      run: docker build -f $(echo $DOCKERFILE_DEPLOY) -t $(echo $DEPLOY_IMAGE_NAME) .
+            - name: Build the BASE image
+              run: docker build -f $(echo $DOCKERFILE_BASE) -t $(echo $BASE_IMAGE_NAME) .
 
-    - name: Push the image to GitHub Packages
-      run: |
-        echo Tag image
-        docker tag $(echo $DEPLOY_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
-        echo Login into GitHub container
-        docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
-        echo Push image
-        docker push $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+            - name: Build the CI image
+              run: docker build -f $(echo $DOCKERFILE_CI) -t $(echo $CI_IMAGE_NAME) .
 
-    - name: Deploy to Digital Ocean droplet via SSH action
-      uses: appleboy/ssh-action@v0.1.3
-      with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSHKEY }}
-          passphrase : ${{ secrets.PASSPHRASE }}
-          envs: CD_IMAGE_NAME,CD_CONTAINER_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
-          script: |
-            echo Stop running container
-            docker stop $(echo $CD_CONTAINER_NAME)
-            echo Remove old container
-            docker rm -f $(echo $CD_CONTAINER_NAME)
-            echo Remove old image
-            docker rmi -f $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME)
-            echo Login into GitHub Registry
-            docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
-            echo Run a new container from the pulled image
-            docker run -d --restart always -p 80:80 --name $(echo $CD_CONTAINER_NAME) $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
-      
-    - name: Update deployment status (success)
-      if: success()
-      uses: chrnorm/deployment-status@releases/v1
-      with:
-        token: "${{ github.token }}"
-        target_url: http://gummiees.com
-        state: "success"
-        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+            - name: Build the CD image
+              run: docker build -f $(echo $DOCKERFILE_CD) -t $(echo $CD_IMAGE_NAME) .
 
-    - name: Update deployment status (failure)
-      if: failure()
-      uses: chrnorm/deployment-status@releases/v1
-      with:
-        token: "${{ github.token }}"
-        target_url: http://gummiees.com
-        state: "failure"
-        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+            - name: Build the deploy image
+              run: docker build -f $(echo $DOCKERFILE_DEPLOY) -t $(echo $DEPLOY_IMAGE_NAME) .
+
+            - name: Push the image to GitHub Packages
+              run: |
+                  echo Tag images
+                  docker tag $(echo $BASE_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $BASE_IMAGE_NAME):$(echo $VERSION)
+                  docker tag $(echo $CI_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CI_IMAGE_NAME):$(echo $VERSION)
+                  docker tag $(echo $CD_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+                  docker tag $(echo $DEPLOY_IMAGE_NAME):latest $(echo $REGISTRY)/$(echo $DEPLOY_IMAGE_NAME):$(echo $VERSION)
+                  echo Login into GitHub container
+                  docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
+                  echo Push images
+                  docker push $(echo $REGISTRY)/$(echo $BASE_IMAGE_NAME):$(echo $VERSION)
+                  docker push $(echo $REGISTRY)/$(echo $CI_IMAGE_NAME):$(echo $VERSION)
+                  docker push $(echo $REGISTRY)/$(echo $CD_IMAGE_NAME):$(echo $VERSION)
+                  docker push $(echo $REGISTRY)/$(echo $DEPLOY_IMAGE_NAME):$(echo $VERSION)
+
+            - name: Deploy to Digital Ocean droplet via SSH action
+              uses: appleboy/ssh-action@v0.1.3
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  key: ${{ secrets.SSHKEY }}
+                  passphrase: ${{ secrets.PASSPHRASE }}
+                  envs: DEPLOY_IMAGE_NAME,CD_CONTAINER_NAME,REGISTRY,REGISTRY_BASE_URL,VERSION
+                  script: |
+                      echo Stop running container
+                      docker stop $(echo $CD_CONTAINER_NAME)
+                      echo Remove old container
+                      docker rm -f $(echo $CD_CONTAINER_NAME)
+                      echo Remove old image
+                      docker rmi -f $(echo $REGISTRY)/$(echo $DEPLOY_IMAGE_NAME)
+                      echo Login into GitHub Registry
+                      docker login $(echo $REGISTRY_BASE_URL) -u ${{ github.repository_owner }} -p ${{ secrets.GH_TOKEN }}
+                      echo Run a new container from the pulled image
+                      docker run -d --restart always -p 80:80 --name $(echo $CD_CONTAINER_NAME) $(echo $REGISTRY)/$(echo $DEPLOY_IMAGE_NAME):$(echo $VERSION)

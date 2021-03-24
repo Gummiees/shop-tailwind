@@ -21,10 +21,10 @@ Optimized as much as I could. They run with the official node image on the lts v
 
 ### Steps to deploy
 
-1. Runs the CI image `Dockerfile.ci`. Executes `npm i` and `npm run test:ci`.
-2. Runs the CD image `Dockerfile.cd`, which uses the `angular-ci` image, built on step 1. Executes `npm run build`.
-3. Runs the Deploy image `Dockerfile.deploy`, which uses the official `nginx` image, and some inputs from the step 2 image `angular-cd`.
-4. Logs in and uploads the image from step 3 named as `angular-cd` to the [GitHub Packages registry](https://github.com/Gummiees/shop-tailwind/packages/).
+1. Run the CI image `Dockerfile.ci`. Executes `npm i` and `npm run test:ci`.
+2. Run the CD image `Dockerfile.cd`, which uses the `angular-ci` image, built on step 1. Executes `npm run build`.
+3. Run the Deploy image `Dockerfile.deploy`, which uses the official `nginx` image, and some inputs from the step 2 image `angular-cd`.
+4. Login and upload the image from step 3 named as `angular-deploy` to the [GitHub Packages registry](https://github.com/Gummiees/shop-tailwind/packages/).
 5. Connects via SSH to the Droplet on DigitalOcean.
 6. Stops the old container
 7. Deletes the container
@@ -33,12 +33,20 @@ Optimized as much as I could. They run with the official node image on the lts v
 
 Success! 🎉
 
+## Steps to debug
+
+1. `docker build -f Dockerfile.base -t angular-base .`
+2. `docker build -f Dockerfile.dev -t angular-dev .`
+3. `docker run -d -p 4200:4200 --name dev-container angular-dev:latest npm start`
+4. 
+
 ## Docker commands
 
 - `docker-compose up --build -d`
 - `docker rm -f <container_id>`
 - `docker rmi -f <image_id>`
-- `docker exec -it <command>`
+- `docker exec <container_id> -it <command>`
+- `docker run -d --restart always -p 4200:4200 --name <container_name> <image_name>:<image_tag> <command>`
 
 ## SSH commands
 - `sudo ssh root@ip -i ./.ssh/droplet-sshkey`
