@@ -1,19 +1,8 @@
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - 'config/**'
-            - 'site/**'
-            - 'Dockerfile'
-            - '.github/workflows/**'
     pull_request:
         types: [opened, reopened, synchronize, reopened, edited]
         branches:
             - main
-    release:
-        types:
-            - created
 
 jobs:
     build:
