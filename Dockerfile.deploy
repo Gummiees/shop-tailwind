@@ -1,4 +1,5 @@
 # You only can run this image if you previously built the CD image.
 FROM nginx:stable
+
 COPY --from=angular-cd:latest /usr/src/app/dist/shop-tailwind /srv
 COPY --from=angular-cd:latest /usr/src/app/nginx.conf /etc/nginx/conf.d/default.conf
